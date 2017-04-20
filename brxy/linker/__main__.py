@@ -16,6 +16,7 @@ async def catch_and_log_exceptions(*args, **kwargs):
 
 root = logging.getLogger()
 root.setLevel(logging.WARNING)
+# root.setLevel(logging.INFO)
 
 logger.setLevel(logging.WARNING)
 logger.setLevel(logging.INFO)

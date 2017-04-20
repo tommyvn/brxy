@@ -8,7 +8,10 @@ import random
 import signal
 from urllib.parse import parse_qs
 from functools import partial
-from aioldsplice import proxy, reader_ready, writer_ready
+# from old_splice import proxy, reader_ready, writer_ready
+# from aioldsplice import proxy, reader_ready, writer_ready
+from aioldsplice import reader_ready, writer_ready
+from ..edge.proxy import simple_proxy as proxy
 
 
 DRIE_BASE_DIR = "/var/drie/apps"
@@ -31,11 +34,12 @@ async def client(route, proxy_address, start_time=0, do_seed_bool=False,
     client.connect_ex(proxy_address)
     address = client.getsockname()
     await writer_ready(client.fileno(), _loop=loop)
-    cmd = "seq={}&route={}&seed={}".format(start_time, route, do_seed)
+    cmd = "seq={}&route={}&seed={}&fileno={}".format(start_time, route, do_seed, client.fileno())
     client.send('{}:{},'.format(len(cmd), cmd).encode())
     await reader_ready(client.fileno(), _loop=loop)
     # TODO massive assumtion that 5 bytes of the NS is ready to read here...
     buff = client.recv(5)
+    logger.info("read {} from {}".format(buff, client))
     str_length, buff = buff.split(b':', 1)
     length = int(str_length)
     while len(buff) < length + 1:
@@ -57,7 +61,7 @@ async def client(route, proxy_address, start_time=0, do_seed_bool=False,
             "{}:{}".format(*server_conn.getpeername())))
         await proxy(client, server_conn, _loop=loop)
         connected = True
-    client.shutdown(socket.SHUT_RDWR)
+    # client.shutdown(socket.SHUT_RDWR)
     # client.close()
     return {"connected": connected, "is_newest": is_newest}
 
@@ -97,7 +101,7 @@ class Process(object):
     async def __aenter__(self):
         print("will run {}".format(self._cmd))
         self._process = await asyncio.create_subprocess_exec(
-            *self._cmd, env={"PORT": str(self._port)},
+            *self._cmd, env=dict(list(os.environ.items()) + list({"PORT": str(self._port)}.items())),
             preexec_fn=os.setsid)
         logger.info("started {} at pid {}".format(self._cmd, self._process.pid))
         return self._process
@@ -117,7 +121,7 @@ class Process(object):
 
 
 # TODO get pool_size from app config
-async def client_pool(route, process_fun, proxy_address, check_port, app_port, mount_certs, pool_size=10):
+async def client_pool(route, process_fun, proxy_address, check_port, app_port, mount_certs, pool_size=2):
     loop = asyncio.get_event_loop()
     last_connect = datetime.datetime.now()
     start_time = int(time.time() * 1000000)
@@ -128,7 +132,10 @@ async def client_pool(route, process_fun, proxy_address, check_port, app_port, m
     server_check_address = ('127.0.0.1', c_port)
     async with process_fun(port) as process:
 
+        # TODO with a cpu limit, cycling containers every minute and the need to gunzip slugs a 30s startup time gets hit
+        #      too often. Once I've moved to slug dirs instead of slug zips this should drop back down to 30
         server_conn = await asyncio.wait_for(connect_address(server_check_address), 60)
+        # server_conn = await asyncio.wait_for(connect_address(server_address), 30)
 
         address = server_conn.getsockname()
         logger.info("port {} up from {}".format(port, "{}:{}".format(*address)))
