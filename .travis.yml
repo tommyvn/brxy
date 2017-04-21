@@ -1,5 +1,5 @@
 install:
-- ./.travis/install-python-osx.sh
+- source ./.travis/install-python-osx.sh
 - pip install -r requirements-tests.txt
 script: make tests
 before_deploy:
