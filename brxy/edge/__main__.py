@@ -10,35 +10,22 @@ from brxy.edge.util import server
 import os
 
 
-# logger = logging.getLogger()
 logger = logging.getLogger(__name__)
-
-
-logger.setLevel(logging.WARNING)
-# logger.setLevel(logging.DEBUG)
-
-root = logging.getLogger()
-root.setLevel(logging.DEBUG)
-# root.setLevel(logging.WARNING)
-# TODO figure out logging. If this is unhashed it double logs because something simple is wrong
-consoleHandler = logging.StreamHandler()
-consoleHandler.setLevel(logging.WARNING)
-# TODO don't stay at INFO
-consoleHandler.setLevel(logging.INFO)
-consoleHandler.setLevel(logging.DEBUG)
-
-formatter = logging.Formatter(
-  '%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s')
-consoleHandler.setFormatter(formatter)
-
-logger.addHandler(consoleHandler)
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--frontend-port', type=int, default=80)
 parser.add_argument('--backend-port', type=int, default=9080)
+parser.add_argument('-d', '--debug', action='count', default=0)
 parser.add_argument('seed_cmd', nargs='*')
 args = parser.parse_args()
+
+log_level = (logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG)[args.debug]
+logging.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s',
+                    datefmt='%m/%d/%Y %I:%M:%S %p', level=log_level)
+logger.warning("logging warning")
+logger.info("logging info")
+logger.debug("logging debug")
+
 
 loop = asyncio.get_event_loop()
 
