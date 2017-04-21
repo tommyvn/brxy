@@ -1,8 +1,41 @@
-language: python
-python:
-  - "3.5"
-  - "3.6"
-install: "pip install -r requirements-tests.txt"
-script:
-  - flake8 tests/ pullproxy/ setup.py
-  - nosetests --with-coverage --cover-package=pullproxy tests
+install:
+- source ./.travis/install-python-osx.sh
+- pip install -r requirements-tests.txt
+script: make tests
+before_deploy:
+- pip install pyinstaller
+- make bin
+- mv dist/brxy.edge dist/brxy.edge-${TRAVIS_OS_NAME}
+- mv dist/brxy.node dist/brxy.node-${TRAVIS_OS_NAME}
+matrix:
+  include:
+    - language: python
+      os: linux
+      python: '3.6'
+    - language: python
+      os: linux
+      python: '3.5'
+    - os: osx
+      language: generic
+
+_deploy_provider: &_deploy_provider
+  provider: releases
+  api_key:
+    secure: ODfedFaIo2xJCtgdv2IP/2ZVSuenu4LIubm1cae+tO6bpltBE4JpwHpqZBDoMm9coERrCzDHaXE8KVAoqXbcka8D6GnqvFhUqH5dRKz0t+J9C0zapvb53w7a89j+nXImsKrJCZomdkIIoJKLUBK86a/QVjm0w5+j2NAaY+0c+PsnqgQHAvvrmQ3PtM5Fmmm/O7Tqb+OweuwRl4xuKa1cFeqeUVPoaZntqT0ZSRUuk6LGXx0qWXTf8eeLEJlxa1kcnI4yijpOo0selaxlQgO2o+hWhUEmQiwWogK182Q1aqtpmX4BSHdhS5XS7eek9hw7iZj5qaeowjwNntO8tsLKDIfQAGmABn3v/awyGAk7YH0S7HhZz0C+WyDmh7K6ZpTpENfGnCZY4VsHDda9cV+4ptQTuu30pc01wL0+m7oF2gcbLAeUx3TF56YilEO3RrVGgm5rcYLhmXlMjZuSEQ+umOBmpPXYAe7NHyaJDE1w5rPXbsYRNguIjzAaxPa335eXyOB6/dTwr/szGv6C5gmt5LHjl7l4cVB7uLYVNJVUouxt9PyaawSA4fy/DznHZBvwse60unStPbVt10qsmpAQjBCn7YyjS4HVf+n3dqwaS4Fs7pPeHFIZ0qwG0l4x+8Ucg2WfeDEGGly12PYmOJWPfo6RKreRSjFz/wNhxqzECZ0=
+  file:
+  - dist/brxy.edge-${TRAVIS_OS_NAME}
+  - dist/brxy.node-${TRAVIS_OS_NAME}
+  skip_cleanup: true
+  on: &_deploy_provider_on
+    repo: tommyvn/brxy
+    tags: true
+    # all_branches: true
+deploy:
+- <<: *_deploy_provider
+  on:
+    <<: *_deploy_provider_on
+    python: '3.5'
+- <<: *_deploy_provider
+  on:
+    <<: *_deploy_provider_on
+    condition: "$TRAVIS_OS_NAME == osx"

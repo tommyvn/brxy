@@ -80,7 +80,7 @@ How do I run it?
 
 ### local demo
 
-First, make sure you're using Python 3, this isn't 2008 after all.
+First, make sure you're using Python 3, this isn't 2008 after all. Alternatively you can grab binaries (yes golang fans, while admittedly not as nicely, Python can build binaries too) for Linux and osx over here: https://github.com/tommyvn/brxy/releases
 
 ```
 python -m edge.edge -p 8080 -- python -m edge.node -- python demo.py
