@@ -1,7 +1,7 @@
 from tests import BaseCase
 import socket
 import asyncio
-from brxy.edge.proxy import simple_proxy
+from brxy.proxy import simple_proxy
 from brxy.edge.util import PeekSock, server
 
 

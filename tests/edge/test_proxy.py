@@ -2,7 +2,7 @@ from tests import BaseCase
 from unittest import mock
 import socket
 import asyncio
-from brxy.edge.proxy import simple_proxy
+from brxy.proxy import simple_proxy
 
 
 class TestProxy(BaseCase):

@@ -1,5 +1,5 @@
 import asyncio
-from ..util import sock_recv
+from .util import sock_recv
 import logging
 
 
@@ -8,6 +8,7 @@ logger = logging.getLogger(__name__)
 
 async def simple_proxy(l, r, _loop=None):
     logger.info("proxy from {} to {}".format(l, r))
+
     async def inny_outy(i, o):
         while True:
             data = await sock_recv(i, 1024, _loop=_loop)

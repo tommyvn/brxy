@@ -8,10 +8,7 @@ import random
 import signal
 from urllib.parse import parse_qs
 from functools import partial
-# from old_splice import proxy, reader_ready, writer_ready
-# from aioldsplice import proxy, reader_ready, writer_ready
-from aioldsplice import reader_ready, writer_ready
-from ..edge.proxy import simple_proxy as proxy
+from ..proxy import simple_proxy as proxy
 
 
 DRIE_BASE_DIR = "/var/drie/apps"
@@ -22,6 +19,29 @@ PROC = "web"
 logger = logging.getLogger(__name__)
 
 loop = asyncio.get_event_loop()
+
+
+def reader_ready(*args, **kwargs):
+    return _ready('reader', *args, **kwargs)
+
+
+def writer_ready(*args, **kwargs):
+    return _ready('writer', *args, **kwargs)
+
+
+def _ready(type, sock, _loop=None):
+    loop = _loop if _loop is not None else asyncio.get_event_loop()
+    f = asyncio.Future()
+
+    f.add_done_callback(lambda _: getattr(loop, "remove_{}".format(type))(sock))
+
+    def cb():
+        if f.cancelled():
+            return
+        f.set_result(sock)
+
+    getattr(loop, "add_{}".format(type))(sock, cb)
+    return f
 
 
 async def client(route, proxy_address, start_time=0, do_seed_bool=False,

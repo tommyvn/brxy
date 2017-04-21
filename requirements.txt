@@ -1,2 +1,0 @@
-git+https://github.com/drie/aioldsplice.git@0.0.1
-# or this??? git+https://github.com/drie/aioldsplice.git@0.0.1#egg=aioldsplice
