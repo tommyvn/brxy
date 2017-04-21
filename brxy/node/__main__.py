@@ -3,6 +3,7 @@ import logging
 from functools import partial
 from brxy.node import client_pool, Process
 import argparse
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ def host_port(a):
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')
-parser.add_argument('route')
+parser.add_argument('-r', '--route', default=os.getenv('ROUTE', None), required='ROUTE' not in os.environ)
 parser.add_argument('-p', '--proxy', type=host_port, default=('127.0.0.1', 9080))
 parser.add_argument('--check-port', type=int, default=9080)
 parser.add_argument('--app-port', type=int, default=9080)
