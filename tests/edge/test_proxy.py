@@ -10,10 +10,10 @@ class TestProxy(BaseCase):
     async def test_proxy(self, sock_recv_mock):
         sock_recv_mock.return_value = asyncio.Future()
 
-        left_socket_mock = mock.MagicMock()
-        right_socket_mock = mock.MagicMock()
+        left_socket_mock = mock.MagicMock()  # noqa: F841
+        right_socket_mock = mock.MagicMock()  # noqa: F841
 
-        loop_mock = mock.MagicMock()
+        loop_mock = mock.MagicMock()  # noqa: F841
 
         # with mock.patch(self.loop.sock_sendall) as sock_sendall_mock:
         #     sock_sendall_mock.return_value = asyncio.Future()
