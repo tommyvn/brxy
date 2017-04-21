@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from functools import partial
-from . import client_pool, Process
+from brxy.linker import client_pool, Process
 import argparse
 
 

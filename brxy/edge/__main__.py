@@ -3,10 +3,10 @@ import argparse
 import asyncio
 from functools import partial
 from collections import defaultdict
-from .router import http as http_router, netstring as netstring_router
-from .linker import left as left_linker, right as right_linker, FuturesQueue
-from .proxy import simple_proxy as proxy
-from .util import server
+from brxy.edge.router import http as http_router, netstring as netstring_router
+from brxy.edge.linker import left as left_linker, right as right_linker, FuturesQueue
+from brxy.proxy import simple_proxy as proxy
+from brxy.edge.util import server
 import os
 
 
