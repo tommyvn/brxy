@@ -20,8 +20,8 @@ parser.add_argument('seed_cmd', nargs='*')
 args = parser.parse_args()
 
 log_level = (logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG)[args.debug]
-logging.basicConfig(format='%(asctime)s %(module)s %(levelname)s: %(message)s',
-                    datefmt='%m/%d/%Y %I:%M:%S %p', level=log_level)
+logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s:%(lineno)d %(levelname)s: %(message)s',
+                    level=log_level)
 logger.warning("logging warning")
 logger.info("logging info")
 logger.debug("logging debug")

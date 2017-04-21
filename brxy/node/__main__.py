@@ -14,16 +14,6 @@ async def catch_and_log_exceptions(*args, **kwargs):
     except Exception:
         logger.exception("uncaught exception")
 
-root = logging.getLogger()
-root.setLevel(logging.WARNING)
-# root.setLevel(logging.INFO)
-
-logger.setLevel(logging.WARNING)
-logger.setLevel(logging.INFO)
-
-consoleHandler = logging.StreamHandler()
-consoleHandler.setLevel(logging.DEBUG)
-
 
 def host_port(a):
     try:
@@ -40,16 +30,17 @@ parser.add_argument('-p', '--proxy', type=host_port, default=('127.0.0.1', 9080)
 parser.add_argument('--check-port', type=int, default=9080)
 parser.add_argument('--app-port', type=int, default=9080)
 parser.add_argument('--with-certs', action='store_true')
+parser.add_argument('-d', '--debug', action='count', default=0)
 parser.add_argument('start_cmd', nargs='*')
-
 args = parser.parse_args()
 
-formatter = logging.Formatter(
-  '%(asctime)s - %(name)s:{}:%(process)d:%(lineno)d - %(levelname)s - %(message)s'.format(args.route))
-consoleHandler.setFormatter(formatter)
+log_level = (logging.ERROR, logging.WARNING, logging.INFO, logging.DEBUG)[args.debug]
+logging.basicConfig(format='%(asctime)s %(name)s.%(funcName)s:%(lineno)d %(levelname)s: %(message)s',
+                    level=log_level)
+logger.warning("logging warning")
+logger.info("logging info")
+logger.debug("logging debug")
 
-root.addHandler(consoleHandler)
-# logger.addHandler(consoleHandler)
 logger.info("connecting to proxy at {}".format(args.proxy))
 
 loop = asyncio.get_event_loop()
