@@ -87,7 +87,7 @@ python -m brxy.edge -p 8080 -- python -m brxy.node -- python demo.py
 curl localhost:8080
 ```
 
-If you watch your process listing you'll see that it fires up a file server on your local directory on demand to serve requests. If you can reach 5 concurrent requests you'll see it fires up a second one to handle the extra load. Reaching 5 concurrent requests isn't always as easy as it sounds but `demo.py` has your back. It's single threaded and `-d` introduces a delay into the response so the below will result in 4 copise spun up to magically make a single threaded blocking server a scalable serverless beast.
+If you watch your process listing you'll see that it fires up a demo web server on demand to serve requests. If you can reach 5 concurrent requests you'll see it fires up a second one to handle the extra load. Reaching 5 concurrent requests isn't always as easy as it sounds but `demo.py` has your back. It's single threaded and `-d` introduces a delay into the response so the below will result in 4 copise spun up to magically make a single threaded blocking server a scalable serverless beast.
 
 ```
 python -m brxy.edge -p 8080 -- python -m brxy.node -- python demo.py -d 10
