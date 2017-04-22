@@ -18,7 +18,13 @@ def http(router, router_timeout=5, discover_route_timeout=0.5, _loop=None):
             match = None
             ps = PeekSock(sock)
             while not match and len(buff) < 1024:
+                prev_buff = buff
                 buff = await sock_recv(ps, 1024, _loop=_loop)
+                # Switch back to the event loop for a bit.
+                # Without this tools like wrk lock up the event loop
+                if buff == prev_buff:
+                    await asyncio.sleep(0.1)
+                logger.debug("buffer is {}".format(buff))
                 match = _host_header_re.search(buff)
             if match is None:
                 logger.info("{} no match!".format("{}:{}".format(*address)))
