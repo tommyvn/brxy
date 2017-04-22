@@ -2,7 +2,7 @@
 
 It's a brokering proxy, a serverless in a box super double reverse gender changing proxy micro loadbalancer from the future
 
-[![Build Status](https://travis-ci.org/tommyvn/edge.png)](https://travis-ci.org/tommyvn/edge)
+[![Build Status](https://travis-ci.org/tommyvn/brxy.png)](https://travis-ci.org/tommyvn/brxy)
 
 ## What is it?
 
