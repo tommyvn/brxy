@@ -1,4 +1,4 @@
-# edge
+# brxy
 
 It's a brokering proxy, a serverless in a box super double reverse gender changing proxy micro loadbalancer from the future
 
@@ -22,14 +22,14 @@ An interesting side effect of these two features is that if the command supplied
 
 Here's the flow:
 
-A request arrives on edge for example.com
+A request arrives on brxy.edge for example.com
 ```
                  +-----------+
 Interwebs =====> | brxy.edge |
                  +-----------+
 ```
 
-edge has to hold the connection so it runs the startup command:
+brxy.edge has to hold the connection so it runs the startup command:
 ```
                  +-----------+
 Interwebs =====> | brxy.edge |
@@ -37,7 +37,7 @@ Interwebs =====> | brxy.edge |
                kubectl run example.com
 ```
 
-Once the application is running a micro-proxy called  node  collects the request and hands it to the example.com app
+Once the application is running a micro-proxy called brxy.node collects the request and hands it to the example.com app
 ```
                                            somewhere in your kube
                                               cluster...
