@@ -83,14 +83,14 @@ How do I run it?
 First, make sure you're using Python 3, this isn't 2008 after all. Alternatively you can grab binaries (yes golang fans, while admittedly not as nicely, Python can build binaries too) for Linux and osx over here: https://github.com/tommyvn/brxy/releases
 
 ```
-python -m edge.edge -p 8080 -- python -m edge.node -- python demo.py
+python -m brxy.edge -p 8080 -- python -m brxy.node -- python demo.py
 curl localhost:8080
 ```
 
 If you watch your process listing you'll see that it fires up a file server on your local directory on demand to serve requests. If you can reach 5 concurrent requests you'll see it fires up a second one to handle the extra load. Reaching 5 concurrent requests isn't always as easy as it sounds but `demo.py` has your back. It's single threaded and `-d` introduces a delay into the response so the below will result in 4 copise spun up to magically make a single threaded blocking server a scalable serverless beast.
 
 ```
-python -m edge.edge -p 8080 -- python -m edge.node -- python demo.py -d 10
+python -m brxy.edge -p 8080 -- python -m brxy.node -- python demo.py -d 10
 curl localhost:8080 &
 curl localhost:8080 &
 curl localhost:8080 &
